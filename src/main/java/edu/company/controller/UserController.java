@@ -2,6 +2,7 @@ package edu.company.controller;
 
 import edu.company.dto.AuthRequest;
 import edu.company.dto.CreateUserRequest;
+import edu.company.dto.TokenResponse;
 import edu.company.model.User;
 import edu.company.service.JwtService;
 import edu.company.service.UserService;
@@ -30,21 +31,17 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "Hello World..!";
-    }
-
     @PostMapping("/addNewUser")
     public User addUser(@RequestBody CreateUserRequest request) {
         return service.createUser(request);
     }
 
     @PostMapping("/generateToken")
-    public String generateToken(@RequestBody AuthRequest request) {
+    public TokenResponse generateToken(@RequestBody AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(request.username());
+            String token = jwtService.generateToken(request.username());
+            return new TokenResponse(token);
         }
         log.info("invalid username " + request.username());
         throw new UsernameNotFoundException("invalid username {} " + request.username());
