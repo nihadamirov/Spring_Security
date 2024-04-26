@@ -1,5 +1,6 @@
 package edu.company.model;
 
+import edu.company.entities.ForgotPassword;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,11 @@ public class User implements UserDetails {
     private Long id;
     private String name;
     private String username;
+    private String email;
     private String password;
+
+    @OneToOne(mappedBy = "user")
+    private ForgotPassword forgotPassword;
 
     private boolean enabled;
     private boolean accountNonExpired;

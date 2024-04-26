@@ -39,6 +39,7 @@ public class UserService implements UserDetailsService {
         User newUser = User.builder()
                 .name(request.name())
                 .username(request.username())
+                .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .authorities(request.authorities())
                 .accountNonExpired(true)
