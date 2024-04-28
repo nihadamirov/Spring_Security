@@ -1,2 +1,5 @@
-package edu.company.dto;public record ChangePassword() {
+package edu.company.dto;
+
+public record ChangePassword(String password,
+                             String repeatPassword) {
 }
