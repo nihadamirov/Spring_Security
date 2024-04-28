@@ -1,40 +1,47 @@
 package edu.company.controller;
 
+import edu.company.dto.ChangePassword;
 import edu.company.dto.MailBody;
 import edu.company.entities.ForgotPassword;
 import edu.company.model.User;
 import edu.company.repository.ForgotPasswordRepository;
 import edu.company.repository.UserRepository;
 import edu.company.service.EmailService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 
 @RestController
-@RequestMapping("forgetPassword")
+@RequestMapping("/forgotPassword")
+@Slf4j
 public class ForgotPasswordController {
 
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final ForgotPasswordRepository forgotPasswordRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ForgotPasswordController(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository) {
+    public ForgotPasswordController(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.forgotPasswordRepository = forgotPasswordRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    //for mail for email verification
+    //send mail for email verification
+    @PostMapping("/verifyMail/{email}")
+    public ResponseEntity<String> verifyMail(@PathVariable String email) throws Exception {
 
-    @PostMapping("/verifyMail{email}")
-    public ResponseEntity<String> verifyMail(@PathVariable String email) {
+        log.info("This is not email verify");
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Please provide an valid email"));
@@ -53,10 +60,45 @@ public class ForgotPasswordController {
                 .build();
 
         emailService.sendSimpleMessage(mailBody);
+
         forgotPasswordRepository.save(fp);
+
 
         return ResponseEntity.ok("Email sent for verification!");
     }
+
+    @PostMapping("/verifyOtp{otp}/{email}")
+    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Please provide an valid email"));
+
+
+        ForgotPassword fp = forgotPasswordRepository.findByOtpAndUser(otp, user)
+                .orElseThrow(() -> new RuntimeException("Invalid OTP for email: " + email));
+
+        if (fp.getExpirationTime().before(Date.from(Instant.now()))) {
+            forgotPasswordRepository.deleteById(fp.getForgotPasswordId());
+            return new ResponseEntity<>("OTP has expired!", HttpStatus.EXPECTATION_FAILED);
+        }
+
+        return ResponseEntity.ok("OTP verified!");
+    }
+
+    @PostMapping("/changePassword/{email}")
+    public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
+                                                        @PathVariable String email) {
+        if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
+            return new ResponseEntity<>("PLease enter the password again!", HttpStatus.EXPECTATION_FAILED);
+        }
+
+        String encodedPassword = passwordEncoder.encode(changePassword.password());
+        userRepository.updatePassword(email, encodedPassword);
+
+        return ResponseEntity.ok("Password changed!");
+
+
+    }
+
 
     private Integer otpGenerator() {
         Random rand = new Random();

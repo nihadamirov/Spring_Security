@@ -36,17 +36,17 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x ->
-                        x.requestMatchers("/auth/addNewUser/**", "/auth/generateToken/**").permitAll()
-                )
-                .authorizeHttpRequests(x ->
-                        x.requestMatchers("/auth/user").hasRole("USER")
-                                .requestMatchers("/auth/admin").authenticated()
+                        x.requestMatchers("/auth/addNewUser/**", "/auth/generateToken/**", "/forgotPassword/**")
+                                .permitAll()
+                                .requestMatchers("/auth/user").hasRole("USER")
+                                .requestMatchers("/auth/admin").hasRole("ADMIN")
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
