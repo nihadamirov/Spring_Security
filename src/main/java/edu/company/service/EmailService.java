@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 public class EmailService {
@@ -20,17 +21,16 @@ public class EmailService {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(mailBody.to());
-            message.setFrom("");
+            message.setFrom("your_mail");
             message.setSubject(mailBody.subject());
             message.setText(mailBody.text());
 
             javaMailSender.send(message);
 
 
-        }
-        catch (Exception s) {
+        } catch (Exception s) {
             log.error(s.getMessage(), s);
-            throw new Exception("Error sending mail") ;
+            throw new Exception("Error sending mail");
         }
     }
 }

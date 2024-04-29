@@ -31,12 +31,12 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/addNewUser")
+    @PostMapping("/registration")
     public User addUser(@RequestBody CreateUserRequest request) {
         return service.createUser(request);
     }
 
-    @PostMapping("/generateToken")
+    @PostMapping("/login")
     public TokenResponse generateToken(@RequestBody AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         if (authentication.isAuthenticated()) {
