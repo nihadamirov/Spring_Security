@@ -31,7 +31,7 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/registration")
+    @PostMapping("/register")
     public User addUser(@RequestBody CreateUserRequest request) {
         return service.createUser(request);
     }

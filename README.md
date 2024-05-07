@@ -76,8 +76,8 @@ The project structure is as follows:
 
 ## Usage
 
-- To add a new user, send a POST request to `/auth/addNewUser` with the necessary user details in the request body.
-- To generate a JWT token, send a POST request to `/auth/generateToken` with the username and password in the request body.
+- To add a new user, send a POST request to `/auth/registration` with the necessary user details in the request body.
+- To generate a JWT token, send a POST request to `/auth/login` with the username and password in the request body.
 - Access `/auth/user` endpoint for user-specific resources (requires USER role).
 - Access `/auth/admin` endpoint for admin-specific resources (requires ADMIN role).
 
@@ -88,7 +88,7 @@ The project structure is as follows:
 - Spring Data JPA
 - MySQL Database
 
----
+----
 
 ## Additional Resources
 

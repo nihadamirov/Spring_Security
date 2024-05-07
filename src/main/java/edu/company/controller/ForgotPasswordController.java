@@ -21,7 +21,7 @@ import java.util.Random;
 
 
 @RestController
-@RequestMapping("/forgotPassword")
+@RequestMapping("/api/password/")
 @Slf4j
 public class ForgotPasswordController {
 
@@ -84,7 +84,7 @@ public class ForgotPasswordController {
         return ResponseEntity.ok("OTP verified!");
     }
 
-    @PostMapping("/changePassword/{email}")
+    @PostMapping("/change/{email}")
     public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
                                                         @PathVariable String email) {
         if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())) {
