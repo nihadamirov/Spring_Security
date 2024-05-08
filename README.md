@@ -1,6 +1,3 @@
-Ən başa olmaqla, README.md faylınızda proyektinizin adını, qısa təsviri və quraşdırılması üçün təlimatlar yer almalıdır. Sonra proyektin məqsədi, funksiyaları, istifadəsi və əsas elementləri barədə məlumatlar əlavə edilə bilər. Məlumatları analiz edib README.md faylına yazım:
-
-```markdown
 # JWT Token Authentication Project
 
 This project implements JWT (JSON Web Token) token-based authentication in a Spring Boot application. It provides user registration, login, password reset functionality, and role-based access control.
