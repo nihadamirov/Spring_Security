@@ -1,100 +1,83 @@
-# Spring Security Project
+Ən başa olmaqla, README.md faylınızda proyektinizin adını, qısa təsviri və quraşdırılması üçün təlimatlar yer almalıdır. Sonra proyektin məqsədi, funksiyaları, istifadəsi və əsas elementləri barədə məlumatlar əlavə edilə bilər. Məlumatları analiz edib README.md faylına yazım:
 
-This project is a Spring Boot application for user authentication and authorization using 
- Spring Security with MySQL database and Docker.
+```markdown
+# JWT Token Authentication Project
 
-## Prerequisites
+This project implements JWT (JSON Web Token) token-based authentication in a Spring Boot application. It provides user registration, login, password reset functionality, and role-based access control.
 
-Make sure you have the following installed:
+## Installation
 
-- Java Development Kit (JDK-17)
-- IntelliJ IDEA (or any preferred IDE)
-- Postman (for testing API endpoints)
-- Docker
-
-## Getting Started
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/nihadamirov/Spring_Security
-```
-
-2. Open the project in IntelliJ IDEA.
-
-3. Configure MySQL database settings in `application.properties`:
-
-```properties
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.url=jdbc:mysql://localhost:3306/security_db
-spring.datasource.username=
-spring.datasource.password=
-spring.jpa.hibernate.ddl-auto=update
-```
-
-4. Build and run the application.
-
-5. Test the API endpoints using Postman.
-
-## Docker Setup
-
-1. Make sure Docker is installed on your machine.
-
-2. Create a Docker Compose file (`docker-compose.yml`) with the following configuration:
-
-```yaml
-version: '3.8'
-
-services:
-  db:
-    image: mysql
-    restart: always
-    container_name: security-db
-    environment:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_DATABASE:
-    ports:
-      - '3306:3306'
-```
-
-3. Run the following command to start the MySQL database container:
+To run this project locally, you need to have Docker installed on your machine. Then, clone the repository and navigate to its directory. Use Docker Compose to start the MySQL database container:
 
 ```bash
 docker-compose up -d
 ```
 
-## Project Structure
+After that, you can build and run the Spring Boot application using Maven:
 
-The project structure is as follows:
+```bash
+mvn spring-boot:run
+```
 
-- **Model**: Contains entity classes representing users and roles.
-- **Repository**: Provides interfaces for database operations.
-- **Service**: Implements business logic and user authentication.
-- **Controller**: Defines REST endpoints for user authentication and token generation.
-- **Security**: Configures Spring Security for authentication and authorization.
-- **Configuration**: Configures database and other application properties.
+The application will be accessible at `http://localhost:8080`.
+
+## Features
+
+- User registration and authentication
+- Role-based access control (USER and ADMIN roles)
+- Password reset functionality via OTP (One-Time Password) verification
+- JWT token generation and validation
+- Secure password storage using bcrypt encryption
 
 ## Usage
 
-- To add a new user, send a POST request to `/auth/registration` with the necessary user details in the request body.
-- To generate a JWT token, send a POST request to `/auth/login` with the username and password in the request body.
-- Access `/auth/user` endpoint for user-specific resources (requires USER role).
-- Access `/auth/admin` endpoint for admin-specific resources (requires ADMIN role).
+### User Registration
+
+To register a new user, send a POST request to `/auth/registration` with the following JSON payload:
+
+```json
+{
+  "name": "John Doe",
+  "username": "johndoe",
+  "email": "johndoe@example.com",
+  "password": "password123",
+  "authorities": ["ROLE_USER"]
+}
+```
+
+### User Login
+
+To authenticate a user and generate a JWT token, send a POST request to `/auth/login` with the following JSON payload:
+
+```json
+{
+  "username": "johndoe",
+  "password": "password123"
+}
+```
+
+### Password Reset
+
+To reset a user's password, the user must request a verification code via email. Send a POST request to `/api/password/verifyMail/{email}` to initiate the process. Then, verify the OTP (One-Time Password) by sending a POST request to `/api/password/verifyOtp/{otp}/{email}`. Finally, change the password by sending a POST request to `/api/password/change/{email}` with the new password in the request body.
 
 ## Dependencies
 
 - Spring Boot
 - Spring Security
 - Spring Data JPA
-- MySQL Database
+- MySQL database
+- JWT (JSON Web Token) library
+- Lombok for reducing boilerplate code
+- Maven for dependency management
 
-----
+## Configuration
 
-## Additional Resources
+- `application.properties`: Configuration for Spring Data JPA and database connection.
+- `SecurityConfig`: Configuration for Spring Security and JWT authentication.
+- `JwtService`: Service class for JWT token generation and validation.
+- `UserService`: Service class for user management and authentication.
 
-Here are some additional resources for further learning:
+## Docker Compose
 
-- [Spring Boot Documentation](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
-- [Spring Security Documentation](https://docs.spring.io/spring-security/reference/index.html)
-- [Spring Security Architecture--YouTube](https://youtu.be/h-9vhFeM3MY?si=zZsDtdrdzl6Cht9b)
+The `docker-compose.yml` file is provided to set up a MySQL database container for development purposes.
 
