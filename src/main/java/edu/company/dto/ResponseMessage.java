@@ -1,2 +1,7 @@
-package edu.company.dto;public record ResponseMessage() {
+package edu.company.dto;
+
+public record ResponseMessage(
+        String message
+) {
+
 }
