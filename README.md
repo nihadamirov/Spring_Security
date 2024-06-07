@@ -1,4 +1,4 @@
-# Spring Security Project
+# User Management System
 
 This project implements JWT (JSON Web Token) token-based authentication in a Spring Boot application. It provides user registration, login, password reset functionality, and role-based access control.
 
